@@ -94,7 +94,6 @@ st.markdown("""
     }
     
     .member-card:hover {
-        transform: translateX(10px);
         box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
         border-left-color: #764ba2;
     }
@@ -286,7 +285,7 @@ if menu == "🏠 Beranda":
     st.header("🏫 Area Penelitian")
     col1, col2 = st.columns(2)
     with col1:
-        st.info("📍 **Lokasi Dataset:**")
+        st.info("📍 **Lokasi Pengambilan Dataset:**")
         st.markdown("""
         - Gedung Kuliah (GK-1 dan GK-2)
         - Laboratorium Teknik 1 dan 3
@@ -310,7 +309,7 @@ if menu == "🏠 Beranda":
     with col1:
         st.markdown("""
         <div class="member-card">
-            <div class="member-name">👨‍💼 Sakti Mujahid Imani</div>
+            <div class="member-name">🫅 Sakti Mujahid Imani</div>
             <div class="member-nim">NIM: 122140123</div>
             <div class="member-role">Project Manager (PM)</div>
         </div>
@@ -318,7 +317,7 @@ if menu == "🏠 Beranda":
         
         st.markdown("""
         <div class="member-card">
-            <div class="member-name">👩‍💻 Nayla Fayyiza Khairina</div>
+            <div class="member-name">👩‍⚖️ Nayla Fayyiza Khairina</div>
             <div class="member-nim">NIM: 122140033</div>
             <div class="member-role">Image Processing Engineer</div>
         </div>
@@ -326,7 +325,7 @@ if menu == "🏠 Beranda":
         
         st.markdown("""
         <div class="member-card">
-            <div class="member-name">👨‍💼 Bayu Prameswara Haris</div>
+            <div class="member-name">👨‍🔧 Bayu Prameswara Haris</div>
             <div class="member-nim">NIM: 122140219</div>
             <div class="member-role">Data Analyst & Evaluator</div>
         </div>
@@ -335,7 +334,7 @@ if menu == "🏠 Beranda":
     with col2:
         st.markdown("""
         <div class="member-card">
-            <div class="member-name">👩‍💻 Nur Afni Daem Miarti</div>
+            <div class="member-name">👩‍⚖️ Nur Afni Daem Miarti</div>
             <div class="member-nim">NIM: 122140011</div>
             <div class="member-role">Image Processing Engineer</div>
         </div>
@@ -343,7 +342,7 @@ if menu == "🏠 Beranda":
         
         st.markdown("""
         <div class="member-card">
-            <div class="member-name">👩‍📝 Febriani Nawang Wulan</div>
+            <div class="member-name">👩‍💼 Febriani Nawang Wulan</div>
             <div class="member-nim">NIM: 122140071</div>
             <div class="member-role">Research & Documentation Specialist</div>
         </div>
@@ -391,7 +390,7 @@ elif menu == "📊 Dataset & Tujuan":
     with st.expander("📖 Lihat Detail Setiap Tahap"):
         steps_detail = {
             "1. Ambil Gambar dari Dataset": "Program melakukan scanning seluruh folder menggunakan os.walk(). Setiap file gambar (JPG, PNG, JPEG) dimasukkan ke dalam list untuk diproses.",
-            
+
             "2. Remove Background": "Menggunakan library rembg dengan model AI untuk memisahkan objek motor dari latar belakang, sehingga fokus pada kendaraan.",
             
             "3. Resize Image": "Gambar di-resize menjadi 960 × 540 pixel untuk memastikan komputasi stabil dan konsisten.",
