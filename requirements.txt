@@ -1,6 +1,6 @@
-streamlit==1.31.0
-opencv-python==4.9.0.80
-numpy==1.26.3
-matplotlib==3.8.2
-rembg==2.0.55
-Pillow==10.2.0
+streamlit
+opencv-python
+numpy
+matplotlib
+rembg
+Pillow
