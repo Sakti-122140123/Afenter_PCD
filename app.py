@@ -295,7 +295,7 @@ if menu == "🏠 Beranda":
     with col2:
         st.info("📈 **Jumlah Data:**")
         st.markdown("""
-        - **310 citra** area parkir motor
+        - **243 citra** area parkir motor
         - Berbagai kondisi pencahayaan
         - Berbagai tingkat kepadatan (Occupancy)
         """)
@@ -367,7 +367,7 @@ elif menu == "📊 Dataset & Tujuan":
     st.markdown("""
     <div>
         <h4>Dataset Primer</h4>
-        <p>Dataset yang dikumpulkan sebanyak <b>310 citra</b> yang tersebar di:</p>
+        <p>Dataset yang dikumpulkan sebanyak <b>243 citra</b> yang tersebar di:</p>
         <ul>
             <li>Gedung Kuliah Umum 1 (GKU-1)</li>
             <li>Gedung Kuliah Umum 2 (GKU-2)</li>

@@ -180,7 +180,7 @@ pip install -r requirements.txt
 
 ## 📊 Link Dataset
 
-Dataset primer (310 citra) dapat didownload dari:
+Dataset primer (243 citra) dapat didownload dari:
 [Google Drive - Dataset Parkir ITERA](https://drive.google.com/drive/folders/1_Yisu9bMHBWHbZx7UoBywWo2qlKj73br)
 
 ## 📝 Catatan Pengembangan
