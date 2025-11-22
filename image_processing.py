@@ -20,10 +20,20 @@ def remove_background(image_bytes: bytes) -> np.ndarray:
     Returns:
         np.ndarray: Gambar tanpa background
     """
-    nobg_bytes = remove(image_bytes)
-    nparr = np.frombuffer(nobg_bytes, np.uint8)
-    img_nobg = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    return img_nobg
+    try:
+        nobg_bytes = remove(image_bytes)
+        nparr = np.frombuffer(nobg_bytes, np.uint8)
+        img_nobg = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img_nobg is None:
+            raise ValueError("Failed to decode image after background removal")
+        return img_nobg
+    except Exception as e:
+        # Fallback: return original image if background removal fails
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img is None:
+            raise ValueError(f"Failed to decode image: {str(e)}")
+        return img
 
 
 def resize_image(image: np.ndarray, width: int = 960, height: int = 540) -> np.ndarray:
@@ -225,14 +235,19 @@ def process_parking_image(image_bytes: bytes) -> dict:
     Returns:
         dict: Dictionary berisi semua hasil pemrosesan dan statistik
     """
-    # 1. Baca dan resize gambar asli
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    img_original = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    img_original = resize_image(img_original)
-    
-    # 2. Remove background
-    img_nobg = remove_background(image_bytes)
-    img_nobg = resize_image(img_nobg)
+    try:
+        # 1. Baca dan resize gambar asli
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img_original = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if img_original is None:
+            raise ValueError("Failed to decode image")
+        img_original = resize_image(img_original)
+        
+        # 2. Remove background
+        img_nobg = remove_background(image_bytes)
+        img_nobg = resize_image(img_nobg)
+    except Exception as e:
+        raise ValueError(f"Error processing image: {str(e)}")
     
     # 3. Preprocessing
     gray, gray_blur = preprocess_image(img_nobg)

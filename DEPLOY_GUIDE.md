@@ -9,10 +9,11 @@
 
 ✅ `packages.txt` - Dependencies sistem untuk OpenCV  
 ✅ `.streamlit/config.toml` - Konfigurasi Streamlit  
-✅ `runtime.txt` - Versi Python yang digunakan  
-✅ `requirements.txt` - Dependencies Python (sudah ada)  
-✅ `app.py` - Aplikasi utama (sudah ada)  
-✅ `image_processing.py` - Modul pemrosesan (sudah ada)
+✅ `runtime.txt` - Versi Python 3.10  
+✅ `requirements.txt` - Dependencies Python (optimized)  
+✅ `app.py` - Aplikasi utama  
+✅ `image_processing.py` - Modul pemrosesan (with error handling)  
+✅ `.gitignore` - Files yang tidak perlu di-commit
 
 ## 🔧 Langkah-Langkah Deploy
 
@@ -20,8 +21,8 @@
 
 ```bash
 git add .
-git commit -m "Prepare for Streamlit deployment"
-git push origin main
+git commit -m "Ready for Streamlit Cloud deployment"
+git push origin deploy
 ```
 
 ### 2️⃣ Deploy di Streamlit Cloud
@@ -30,74 +31,133 @@ git push origin main
 2. Login dengan akun GitHub
 3. Klik "New app"
 4. Pilih repository: `byllee/Afenter_PCD`
-5. Branch: `main`
+5. Branch: `deploy` (atau `main` jika sudah merge)
 6. Main file path: `app.py`
 7. Klik "Deploy!"
 
-### 3️⃣ Tunggu Proses Deploy
+### 3️⃣ Tunggu Proses Deploy (5-10 menit)
 
-- Streamlit akan otomatis:
-  - Install dependencies dari `requirements.txt`
-  - Install system packages dari `packages.txt`
-  - Setup Python version dari `runtime.txt`
-  - Apply config dari `.streamlit/config.toml`
+Streamlit akan otomatis:
 
-### 4️⃣ App Siap Digunakan!
+- ✅ Install system packages (`libgl1`, `libglib2.0-0`)
+- ✅ Setup Python 3.10
+- ✅ Install Python dependencies
+- ✅ Download rembg AI model (~180MB)
+- ✅ Apply config
 
-Setelah deploy selesai, app akan tersedia di URL:
+### 4️⃣ App Siap Digunakan! 🎉
+
+URL app akan seperti:
 
 ```
-https://share.streamlit.io/[username]/afenter-pcd/main/app.py
+https://afenter-pcd.streamlit.app
 ```
 
-## ⚠️ Catatan Penting
+## 🔍 Verifikasi Files Sebelum Deploy
 
-### Dataset
+Pastikan files berikut ada dan benar:
 
-- Folder `dataset/` di repository akan ikut ter-deploy
-- Pastikan dataset sudah ter-commit ke GitHub
-- Jika dataset terlalu besar (>100MB), pertimbangkan:
-  - Upload ke GitHub LFS
-  - Atau gunakan external storage (Google Drive, S3, dll)
+### ✅ requirements.txt
 
-### Troubleshooting
+```txt
+streamlit>=1.28.0
+opencv-python-headless==4.8.1.78
+numpy>=1.24.0,<2.0.0
+matplotlib>=3.7.0
+rembg==2.0.50
+Pillow>=10.0.0
+torch>=2.0.0
+onnxruntime
+```
 
-**Problem: OpenCV error**
+### ✅ packages.txt
 
-- Sudah ditangani dengan `packages.txt` yang berisi:
-  ```
-  libgl1-mesa-glx
-  libglib2.0-0
-  ```
+```txt
+libgl1
+libglib2.0-0
+```
 
-**Problem: Memory error saat remove background**
+### ✅ runtime.txt
 
-- `rembg` menggunakan AI model yang cukup berat
-- Jika error, coba kurangi ukuran gambar di `resize_image()`
+```txt
+python-3.10
+```
 
-**Problem: Upload file terlalu besar**
+## ⚠️ Troubleshooting
 
-- Sudah diatur `maxUploadSize = 200` MB di config.toml
-- Jika masih error, user harus upload gambar lebih kecil
+### Error: "ModuleNotFoundError: No module named 'cv2'"
 
-**Problem: App loading lambat**
+**Solusi:** Pastikan menggunakan `opencv-python-headless`, bukan `opencv-python`
 
-- Normal untuk first load karena install rembg model
-- Subsequent loads akan lebih cepat
+### Error: "OSError: libGL.so.1: cannot open shared object file"
+
+**Solusi:** Pastikan `packages.txt` berisi `libgl1` dan `libglib2.0-0`
+
+### Error: "No module named 'torch'"
+
+**Solusi:** Tambahkan `torch>=2.0.0` dan `onnxruntime` di requirements.txt
+
+### Error: Memory/Timeout saat processing
+
+**Solusi:**
+
+- Rembg model berat (~180MB)
+- First load akan lambat (normal)
+- Kurangi ukuran gambar jika perlu
+
+### Error: Dataset tidak muncul
+
+**Solusi:**
+
+- Pastikan folder `dataset/` ter-commit ke GitHub
+- Cek size dataset (max ~500MB untuk free tier)
+- Jika terlalu besar, gunakan sample dataset saja
+
+## 📊 Optimasi Performa
+
+### Caching (sudah implemented)
+
+```python
+@st.cache_resource
+def load_model():
+    # Model di-cache agar tidak reload setiap kali
+    pass
+```
+
+### Lazy Loading
+
+- Dataset hanya dimuat saat halaman "Proses Citra" dibuka
+- Background removal hanya saat tombol diklik
+
+### Error Handling
+
+- Fallback jika background removal gagal
+- Validasi gambar sebelum proses
+- User-friendly error messages
 
 ## 🔗 Link Penting
 
 - **Streamlit Cloud**: https://share.streamlit.io/
-- **Streamlit Docs**: https://docs.streamlit.io/
-- **Deploy Tutorial**: https://docs.streamlit.io/streamlit-community-cloud/get-started
+- **Docs**: https://docs.streamlit.io/
+- **Community**: https://discuss.streamlit.io/
+- **GitHub Repo**: https://github.com/byllee/Afenter_PCD
 
-## 📞 Support
+## 📈 Monitoring
 
-Jika ada masalah saat deploy, cek:
+Setelah deploy, monitor:
 
-1. Logs di Streamlit Cloud dashboard
-2. Pastikan semua file ter-commit dengan benar
-3. Verifikasi `requirements.txt` compatible
+1. **App logs** - Cek errors di Streamlit dashboard
+2. **Resource usage** - CPU/Memory di metrics
+3. **Response time** - First load vs subsequent loads
+
+## 🆘 Support
+
+Jika masih error:
+
+1. Cek logs di Streamlit Cloud dashboard (klik "Manage app" → "Logs")
+2. Copy error message lengkap
+3. Cek compatibility Python 3.10 + package versions
+4. Test locally dulu: `streamlit run app.py`
 
 ---
 
