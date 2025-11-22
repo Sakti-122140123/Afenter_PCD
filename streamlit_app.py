@@ -1,8 +1,9 @@
 """
-Streamlit app untuk deteksi parkir motor
+Streamlit app wrapper untuk deteksi parkir motor
 Optimized untuk deployment di Streamlit Cloud
 """
 import streamlit as st
+import sys
 import os
 
 # Set page config sebagai hal pertama
@@ -13,23 +14,45 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Caching untuk mempercepat loading
+# Check dependencies availability
 @st.cache_resource
-def check_environment():
+def check_dependencies():
     """Check if all dependencies are available"""
+    missing_deps = []
     try:
         import cv2
-        import numpy as np
+    except ImportError:
+        missing_deps.append("opencv-python-headless")
+    
+    try:
+        import numpy
+    except ImportError:
+        missing_deps.append("numpy")
+    
+    try:
         from rembg import remove
-        return True, "All dependencies loaded successfully"
-    except ImportError as e:
-        return False, f"Missing dependency: {str(e)}"
+    except ImportError:
+        missing_deps.append("rembg")
+    
+    try:
+        from PIL import Image
+    except ImportError:
+        missing_deps.append("Pillow")
+    
+    return missing_deps
 
 # Check environment
-deps_ok, deps_msg = check_environment()
-if not deps_ok:
-    st.error(f"❌ Dependency Error: {deps_msg}")
+missing = check_dependencies()
+if missing:
+    st.error(f"❌ Missing dependencies: {', '.join(missing)}")
+    st.info("Please install required packages from requirements.txt")
     st.stop()
 
-# Import the main app
-from app import *
+# Everything OK, load the main app
+try:
+    # Import semua dari app module
+    import app
+except Exception as e:
+    st.error(f"❌ Error loading app: {str(e)}")
+    st.info("Please check app.py for errors")
+    st.stop()

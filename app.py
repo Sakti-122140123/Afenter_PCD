@@ -8,10 +8,8 @@ import streamlit as st
 import cv2
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
 import os
 from image_processing import process_parking_image
-import io
 
 
 # =========================================================
@@ -135,6 +133,7 @@ st.markdown("""
 # =========================================================
 # FUNGSI HELPER
 # =========================================================
+@st.cache_data
 def load_dataset_images(dataset_path="dataset"):
     """Memuat semua gambar dari folder dataset"""
     if not os.path.exists(dataset_path):
