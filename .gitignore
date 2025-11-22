@@ -1,0 +1,34 @@
+# Contoh file .gitignore untuk project ini
+# Jika menggunakan Git
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Streamlit
+.streamlit/
+
+# Dataset (opsional, jika tidak ingin upload dataset ke Git)
+# dataset/**/*.jpg
+# dataset/**/*.png
+# dataset/**/*.jpeg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output
+output/
+*.log
