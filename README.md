@@ -68,7 +68,7 @@ Jika ingin menggunakan fitur "Proses Citra" dengan dataset:
 
 1. Buat folder `dataset` di direktori yang sama dengan `app.py`
 2. Masukkan gambar-gambar area parkir ke dalam folder tersebut
-3. Format yang didukung: `.jpg`, `.jpeg`, `.png`, `.heic`
+3. Format yang didukung: `.jpg`, `.jpeg`, `.png`
 
 Contoh struktur folder:
 ```
