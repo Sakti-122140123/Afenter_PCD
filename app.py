@@ -8,8 +8,10 @@ import streamlit as st
 import cv2
 import numpy as np
 from PIL import Image
+import matplotlib.pyplot as plt
 import os
 from image_processing import process_parking_image
+import io
 
 
 # =========================================================
@@ -133,7 +135,6 @@ st.markdown("""
 # =========================================================
 # FUNGSI HELPER
 # =========================================================
-@st.cache_data
 def load_dataset_images(dataset_path="dataset"):
     """Memuat semua gambar dari folder dataset"""
     if not os.path.exists(dataset_path):
@@ -389,7 +390,7 @@ elif menu == "📊 Dataset & Tujuan":
     with st.expander("📖 Lihat Detail Setiap Tahap"):
         steps_detail = {
             "1. Ambil Gambar dari Dataset": "Program melakukan scanning seluruh folder menggunakan os.walk(). Setiap file gambar (JPG, PNG, JPEG) dimasukkan ke dalam list untuk diproses.",
-
+            
             "2. Remove Background": "Menggunakan library rembg dengan model AI untuk memisahkan objek motor dari latar belakang, sehingga fokus pada kendaraan.",
             
             "3. Resize Image": "Gambar di-resize menjadi 960 × 540 pixel untuk memastikan komputasi stabil dan konsisten.",
