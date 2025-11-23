@@ -20,9 +20,30 @@ def remove_background(image_bytes: bytes) -> np.ndarray:
     Returns:
         np.ndarray: Gambar tanpa background
     """
-    nobg_bytes = remove(image_bytes)
+    from PIL import Image as PILImage
+    
+    nobg_result = remove(image_bytes)
+    
+    # Convert result to bytes if it's not already
+    if isinstance(nobg_result, bytes):
+        nobg_bytes = nobg_result
+    elif isinstance(nobg_result, PILImage.Image):
+        # Handle PIL Image from rembg
+        buf = io.BytesIO()
+        nobg_result.save(buf, format='PNG')
+        nobg_bytes = buf.getvalue()
+    elif isinstance(nobg_result, np.ndarray):
+        # Handle ndarray
+        _, encoded = cv2.imencode('.png', nobg_result)
+        nobg_bytes = encoded.tobytes()
+    else:
+        # Fallback - try to get bytes
+        nobg_bytes = bytes(nobg_result)
+    
     nparr = np.frombuffer(nobg_bytes, np.uint8)
     img_nobg = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if img_nobg is None:
+        raise ValueError("Failed to decode image after background removal")
     return img_nobg
 
 
@@ -100,16 +121,17 @@ def apply_distance_transform(opening: np.ndarray) -> Tuple[np.ndarray, np.ndarra
         Tuple[np.ndarray, np.ndarray]: (distance_transform_normalized, sure_foreground)
     """
     dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
-    dist_norm = cv2.normalize(dist_transform, None, 0, 1.0, cv2.NORM_MINMAX)
+    dist_norm = np.zeros_like(dist_transform, dtype=np.float32)
+    cv2.normalize(dist_transform, dist_norm, 0, 1.0, cv2.NORM_MINMAX)
     
-    _, sure_fg = cv2.threshold(
+    _, sure_fg_result = cv2.threshold(
         dist_transform,
         0.3 * dist_transform.max(),
         255, 0
     )
-    sure_fg = np.uint8(sure_fg)
+    sure_fg = np.uint8(sure_fg_result)
     
-    return dist_norm, sure_fg
+    return dist_norm, np.array(sure_fg, dtype=np.uint8)
 
 
 def extract_roi(sure_fg: np.ndarray, roi_percentage: float = 0.35) -> Tuple[np.ndarray, int]:
@@ -228,6 +250,8 @@ def process_parking_image(image_bytes: bytes) -> dict:
     # 1. Baca dan resize gambar asli
     nparr = np.frombuffer(image_bytes, np.uint8)
     img_original = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if img_original is None:
+        raise ValueError("Failed to decode input image")
     img_original = resize_image(img_original)
     
     # 2. Remove background

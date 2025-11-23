@@ -189,9 +189,9 @@ def display_process_steps(results):
                 with cols[j]:
                     st.markdown(f"**{i+j+1}. {title}**")
                     if is_gray:
-                        st.image(img, use_column_width=True, clamp=True, channels="GRAY")
+                        st.image(img, use_container_width=True, clamp=True)
                     else:
-                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_column_width=True)
+                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
 
 
 # =========================================================
@@ -446,17 +446,20 @@ elif menu == "🔬 Proses Citra":
             )
             
             if st.button("🚀 Proses Gambar", type="primary"):
-                with st.spinner("Memproses gambar... Mohon tunggu..."):
-                    # Baca gambar sebagai bytes
-                    with open(selected_image, "rb") as f:
-                        image_bytes = f.read()
-                    
-                    # Proses
-                    results = process_parking_image(image_bytes)
-                    
-                    # Simpan hasil ke session state
-                    st.session_state['results'] = results
-                    st.success("✅ Pemrosesan selesai!")
+                if selected_image is None:
+                    st.error("Silakan pilih gambar terlebih dahulu")
+                else:
+                    with st.spinner("Memproses gambar... Mohon tunggu..."):
+                        # Baca gambar sebagai bytes
+                        with open(selected_image, "rb") as f:
+                            image_bytes = f.read()
+                        
+                        # Proses
+                        results = process_parking_image(image_bytes)
+                        
+                        # Simpan hasil ke session state
+                        st.session_state['results'] = results
+                        st.success("✅ Pemrosesan selesai!")
             
             # Tampilkan hasil jika ada
             if 'results' in st.session_state:
@@ -549,7 +552,7 @@ elif menu == "📤 Upload Foto Sendiri":
         # Tampilkan preview
         st.subheader("👁️ Preview Gambar")
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar yang diupload", use_column_width=True)
+        st.image(image, caption="Gambar yang diupload", use_container_width=True)
         
         # Validasi gambar
         image_array = np.array(image)
