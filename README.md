@@ -4,8 +4,6 @@
 
 Aplikasi berbasis **Streamlit** untuk mendeteksi area parkir motor menggunakan teknik pengolahan citra digital.
 
-🔗 **Live Demo:** [https://afenter.streamlit.app/](https://afenter.streamlit.app/)
-
 > **Kelompok:** AFEnter  
 > **Institusi:** Institut Teknologi Sumatera (ITERA)  
 > **Mata Kuliah:** Pengolahan Citra Digital (PCD)
@@ -104,12 +102,12 @@ Kelompok mahasiswa Institut Teknologi Sumatera (ITERA) untuk tugas mata kuliah P
 
 | Nama                         | NIM       | Role                                |
 | ---------------------------- | --------- | ----------------------------------- |
-| Sakti Mujahid Imani          | 122140123 | Project Manager (PM)                |
-| Nayla Fayyiza Khairina       | 122140033 | Image Processing Engineer           |
-| Bayu Prameswara Haris        | 122140219 | Data Analyst & Evaluator            |
 | Nur Afni Daem Miarti         | 122140011 | Image Processing Engineer           |
-| Febriani Nawang Wulan        | 122140071 | Research & Documentation Specialist |
 | Muhammad Fadhil Alfitra Budi | 122140025 | UI/UX & Presentation Designer       |
+| Nayla Fayyiza Khairina       | 122140033 | Image Processing Engineer           |
+| Febriani Nawang Wulan        | 122140071 | Research & Documentation Specialist |
+| Sakti Mujahid Imani          | 122140123 | Project Manager (PM)                |
+| Bayu Prameswara Haris        | 122140219 | Data Analyst & Evaluator            |
 
 ---
 
