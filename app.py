@@ -212,11 +212,19 @@ def display_evaluation_metrics(results, ground_truth=None):
         results: Hasil pemrosesan dari image_processing
         ground_truth: List status sebenarnya per slot (opsional, untuk validasi)
     """
-    if 'evaluation' not in results:
-        st.warning("Evaluasi tidak tersedia untuk hasil ini.")
-        return
-    
-    eval_data = results['evaluation']
+    # Fallback: jika evaluation tidak ada, buat dari data yang tersedia
+    if 'evaluation' not in results or results['evaluation'] is None:
+        # Hitung occupancy rate dari data yang ada
+        total_slots = results.get('total_slots', 4)
+        occupied_slots = results.get('occupied_slots', 0)
+        occupancy_rate = (occupied_slots / total_slots * 100) if total_slots > 0 else 0
+        
+        eval_data = {
+            'timing': {},
+            'occupancy_rate': round(occupancy_rate, 2)
+        }
+    else:
+        eval_data = results['evaluation']
     
     st.subheader("📊 Evaluasi Deteksi Slot Parkir")
     
@@ -269,30 +277,6 @@ def display_evaluation_metrics(results, ground_truth=None):
             <p style="margin: 5px 0; color: #28a745;"><b>Prediksi Kosong:</b> {results['empty_slots']}</p>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Visual slot status dengan prediksi
-    st.markdown("### 🎯 Visualisasi Prediksi Per Slot")
-    slot_cols = st.columns(4)
-    for idx, pred_status in enumerate(results['slot_results']):
-        with slot_cols[idx]:
-            if pred_status == "Occupied":
-                st.markdown(f"""
-                <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); 
-                            border-radius: 10px; border: 2px solid #dc3545;">
-                    <p style="margin: 0; font-weight: bold; color: #c62828;">Slot {idx+1}</p>
-                    <p style="margin: 5px 0 0 0; font-size: 24px;">🛵</p>
-                    <p style="margin: 0; color: #dc3545; font-size: 12px;">PREDIKSI: TERISI</p>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown(f"""
-                <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); 
-                            border-radius: 10px; border: 2px solid #28a745;">
-                    <p style="margin: 0; font-weight: bold; color: #2e7d32;">Slot {idx+1}</p>
-                    <p style="margin: 5px 0 0 0; font-size: 24px;">✅</p>
-                    <p style="margin: 0; color: #28a745; font-size: 12px;">PREDIKSI: KOSONG</p>
-                </div>
-                """, unsafe_allow_html=True)
     
     # === VALIDASI MANUAL & CONFUSION MATRIX ===
     st.markdown("---")
@@ -520,7 +504,7 @@ if menu == "🏠 Beranda":
     with col2:
         st.info("📈 **Jumlah Data:**")
         st.markdown("""
-        - **243 citra** area parkir motor (Citra 1.jpg - Citra 243.jpg)
+        - **243 citra** area parkir motor
         - Berbagai kondisi pencahayaan
         - Berbagai tingkat kepadatan (Occupancy)
         """)
@@ -593,7 +577,7 @@ elif menu == "📊 Dataset & Tujuan":
     <div>
         <h4>Dataset Primer - Rule-Based Collection</h4>
         <p>Tim AFEnter mengumpulkan dataset secara mandiri dengan metode <b>rule-based</b>, yaitu pengambilan foto area parkir dengan aturan tertentu untuk memastikan konsistensi dan kualitas data.</p>
-        <p>Total dataset: <b>243 citra</b> (Citra 1.jpg - Citra 243.jpg) yang tersebar di:</p>
+        <p>Total dataset: <b>243 citra</b> yang tersebar di:</p>
         <ul>
             <li>Gedung Kuliah Umum 1 (GKU-1)</li>
             <li>Gedung Kuliah Umum 2 (GKU-2)</li>
@@ -614,7 +598,7 @@ elif menu == "📊 Dataset & Tujuan":
             <li>Menampilkan <b>4 slot parkir</b> dalam satu frame</li>
             <li>Bagian bawah foto harus menampakkan <b>ban motor</b></li>
             <li>Kendaraan <b>tidak bertumpuk</b> dengan kendaraan lain</li>
-            <li>Format file: <b>JPG</b></li>
+            <li>Format file: <b>JPG, PNG, JPEG</b></li>
         </ol>
     </div>
     """, unsafe_allow_html=True)
