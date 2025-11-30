@@ -1,16 +1,29 @@
-# 🅿️ Dashboard Deteksi Area Parkir Motor - AFEnter
+# 🅿️ Deteksi Area Parkir Motor - AFEnter
 
-Dashboard Streamlit untuk mendeteksi area parkir motor di lingkungan kampus ITERA menggunakan pengolahan citra digital.
+Project untuk mendeteksi area parkir motor di lingkungan kampus ITERA menggunakan pengolahan citra digital.
 
 ## 👥 Kelompok AFEnter
 
 **Judul:** PENERAPAN PENGOLAHAN CITRA DIGITAL UNTUK MENDETEKSI AREA PARKIR DI LINGKUNGAN KAMPUS ITERA
 
-**Institut:** Institut Teknologi Sumatera (ITERA)
+Tim AFEnter
+
+Kelompok mahasiswa Institut Teknologi Sumatera (ITERA) untuk tugas mata kuliah Pengolahan Citra Digital.
+
+| Nama                         | NIM       | Role                                |
+| ---------------------------- | --------- | ----------------------------------- |
+| Nur Afni Daem Miarti         | 122140011 | Image Processing Engineer           |
+| Muhammad Fadhil Alfitra Budi | 122140025 | UI/UX & Presentation Designer       |
+| Nayla Fayyiza Khairina       | 122140033 | Image Processing Engineer           |
+| Febriani Nawang Wulan        | 122140071 | Research & Documentation Specialist |
+| Sakti Mujahid Imani          | 122140123 | Project Manager (PM)                |
+| Bayu Prameswara Haris        | 122140219 | Data Analyst & Evaluator            |
+
+---
 
 ## 📋 Deskripsi
 
-Dashboard ini menerapkan metode pengolahan citra digital untuk mendeteksi area parkir kosong dan terisi pada gambar area parkir kampus ITERA. Sistem dapat memproses gambar dari dataset maupun foto yang diupload pengguna.
+Project ini menerapkan metode pengolahan citra digital untuk mendeteksi area parkir kosong dan terisi pada gambar area parkir kampus ITERA. Sistem dapat memproses gambar dari dataset maupun foto yang diupload pengguna.
 
 ## ✨ Fitur
 
@@ -22,7 +35,7 @@ Dashboard ini menerapkan metode pengolahan citra digital untuk mendeteksi area p
 ## 🛠️ Teknologi yang Digunakan
 
 - **Python 3.8+**
-- **Streamlit**: Framework web dashboard
+- **Streamlit**: Framework web GUI
 - **OpenCV**: Pemrosesan citra
 - **NumPy**: Komputasi numerik
 - **rembg**: Remove background otomatis
@@ -54,13 +67,13 @@ pip install -r requirements.txt
 
 ## 🚀 Cara Menjalankan
 
-### 1. Jalankan Dashboard
+### 1. Jalankan GUI
 
 ```powershell
 streamlit run app.py
 ```
 
-Dashboard akan terbuka otomatis di browser pada alamat: `http://localhost:8501` atau Network URL: http://192.168.1.112:8501
+GUI akan terbuka otomatis di browser pada alamat: `http://localhost:8501` atau Network URL: http://192.168.1.112:8501
 
 ### 2. Siapkan Dataset (Opsional)
 
@@ -86,7 +99,7 @@ Dashboard/
 │       └── foto4.jpg
 ```
 
-## 📖 Cara Menggunakan Dashboard
+## 📖 Cara Menggunakan GUI
 
 ### Halaman Beranda
 - Menampilkan judul penelitian
@@ -165,7 +178,7 @@ pip install -r requirements.txt
 - Pastikan koneksi internet stabil
 - Coba install ulang: `pip uninstall rembg` lalu `pip install rembg`
 
-### Dashboard tidak terbuka di browser
+### GUI tidak terbuka di browser
 - Pastikan port 8501 tidak digunakan aplikasi lain
 - Coba jalankan dengan port berbeda: `streamlit run app.py --server.port 8502`
 
@@ -185,7 +198,7 @@ Dataset primer (243 citra) dapat didownload dari:
 
 ## 📝 Catatan Pengembangan
 
-- Dashboard ini menggunakan **rembg** untuk background removal yang memerlukan model AI
+- Project ini menggunakan **rembg** untuk background removal yang memerlukan model AI
 - Proses pertama kali akan lebih lama karena download model (~176MB)
 - Hasil terbaik didapat dari foto dengan:
   - Pencahayaan baik
@@ -206,6 +219,6 @@ Project ini dibuat untuk keperluan akademik tugas akhir mata kuliah Pengolahan C
 
 ---
 
-**Selamat menggunakan Dashboard Deteksi Area Parkir! 🚀**
+**Selamat menggunakan GUI Deteksi Area Parkir! 🚀**
 
 Jika ada pertanyaan atau masalah, silakan hubungi kelompok AFEnter.
