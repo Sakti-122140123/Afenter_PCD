@@ -1,13 +1,5 @@
 # 🅿️ Deteksi Area Parkir Motor
 
-Aplikasi berbasis **Streamlit** untuk mendeteksi area parkir motor menggunakan teknik pengolahan citra digital.
-
-> **Kelompok:** AFEnter  
-> **Institusi:** Institut Teknologi Sumatera (ITERA)  
-> **Mata Kuliah:** Pengolahan Citra Digital (PCD)
-
----
-
 ## 📋 Deskripsi
 
 Aplikasi ini menggunakan berbagai teknik pengolahan citra untuk mendeteksi dan menghitung jumlah motor pada area parkir, meliputi:
