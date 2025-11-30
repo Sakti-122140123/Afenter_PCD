@@ -6,8 +6,9 @@ Kelompok: AFEnter
 import cv2
 import numpy as np
 from rembg import remove
-from typing import Tuple, List
+from typing import Tuple, List, Dict
 import io
+import time
 
 
 def remove_background(image_bytes: bytes) -> np.ndarray:
@@ -240,6 +241,7 @@ def create_parking_slots(image: np.ndarray,
 def process_parking_image(image_bytes: bytes) -> dict:
     """
     Fungsi utama untuk memproses gambar parkir secara lengkap
+    menggunakan pendekatan rule-based untuk mendeteksi slot parkir.
     
     Args:
         image_bytes: Bytes dari gambar input
@@ -247,46 +249,76 @@ def process_parking_image(image_bytes: bytes) -> dict:
     Returns:
         dict: Dictionary berisi semua hasil pemrosesan dan statistik
     """
+    # Start timing
+    start_time = time.time()
+    timing_metrics = {}
+    
     # 1. Baca dan resize gambar asli
+    t0 = time.time()
     nparr = np.frombuffer(image_bytes, np.uint8)
     img_original = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     if img_original is None:
         raise ValueError("Failed to decode input image")
     img_original = resize_image(img_original)
+    timing_metrics['load_resize'] = round((time.time() - t0) * 1000, 2)
     
     # 2. Remove background
+    t0 = time.time()
     img_nobg = remove_background(image_bytes)
     img_nobg = resize_image(img_nobg)
+    timing_metrics['background_removal'] = round((time.time() - t0) * 1000, 2)
     
     # 3. Preprocessing
+    t0 = time.time()
     gray, gray_blur = preprocess_image(img_nobg)
+    timing_metrics['preprocessing'] = round((time.time() - t0) * 1000, 2)
     
     # 4. Threshold
+    t0 = time.time()
     thresh = apply_threshold(gray_blur)
+    timing_metrics['thresholding'] = round((time.time() - t0) * 1000, 2)
     
     # 5. Morfologi
+    t0 = time.time()
     opening = apply_morphology(thresh)
+    timing_metrics['morphology'] = round((time.time() - t0) * 1000, 2)
     
     # 6. Distance Transform
+    t0 = time.time()
     dist_norm, sure_fg = apply_distance_transform(opening)
+    timing_metrics['distance_transform'] = round((time.time() - t0) * 1000, 2)
     
     # 7. Extract ROI
+    t0 = time.time()
     roi_motor, roi_y_start = extract_roi(sure_fg)
+    timing_metrics['roi_extraction'] = round((time.time() - t0) * 1000, 2)
     
-    # 8. Deteksi motor
+    # 8. Deteksi kontur dalam ROI
+    t0 = time.time()
     motor_boxes = detect_motor_contours(roi_motor, roi_y_start)
+    timing_metrics['contour_detection'] = round((time.time() - t0) * 1000, 2)
     
-    # 9. Create parking slots
+    # 9. Create parking slots (4 slot untuk 4 motor)
+    t0 = time.time()
     output_grid, slot_results = create_parking_slots(
         img_original, 
         motor_boxes, 
         roi_y_start
     )
+    timing_metrics['slot_creation'] = round((time.time() - t0) * 1000, 2)
     
-    # Hitung statistik
+    # Total processing time
+    total_time = round((time.time() - start_time) * 1000, 2)
+    timing_metrics['total'] = total_time
+    
+    # Hitung statistik dasar
     total_slots = len(slot_results)
     occupied_slots = sum(1 for s in slot_results if s == "Occupied")
     empty_slots = total_slots - occupied_slots
+    
+    # === EVALUASI: Occupancy Rate ===
+    # Metrik utama untuk mengevaluasi hasil deteksi slot parkir
+    occupancy_rate = (occupied_slots / total_slots * 100) if total_slots > 0 else 0
     
     return {
         'original': img_original,
@@ -302,5 +334,9 @@ def process_parking_image(image_bytes: bytes) -> dict:
         'total_slots': total_slots,
         'occupied_slots': occupied_slots,
         'empty_slots': empty_slots,
-        'motor_count': len(motor_boxes)
+        # Evaluation Metrics - Simplified (Occupancy Rate only)
+        'evaluation': {
+            'timing': timing_metrics,
+            'occupancy_rate': round(occupancy_rate, 2)
+        }
     }
