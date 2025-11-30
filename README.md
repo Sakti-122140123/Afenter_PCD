@@ -2,11 +2,10 @@
 
 Project untuk mendeteksi area parkir motor di lingkungan kampus ITERA menggunakan pengolahan citra digital.
 
-## 👥 Kelompok AFEnter
+## 👨‍💻 Pengembang
 
-**Judul:** PENERAPAN PENGOLAHAN CITRA DIGITAL UNTUK MENDETEKSI AREA PARKIR DI LINGKUNGAN KAMPUS ITERA
-
-Tim AFEnter
+**Kelompok AFEnter**
+- Mata Kuliah: Pengolahan Citra Digital
 
 Kelompok mahasiswa Institut Teknologi Sumatera (ITERA) untuk tugas mata kuliah Pengolahan Citra Digital.
 
@@ -28,6 +27,10 @@ Aplikasi sudah di-deploy dan dapat diakses langsung melalui:
 **🔗 [https://afenter.streamlit.app/](https://afenter.streamlit.app/)**
 
 ---
+
+## 👥 Project
+
+**Judul:** PENERAPAN PENGOLAHAN CITRA DIGITAL UNTUK MENDETEKSI AREA PARKIR DI LINGKUNGAN KAMPUS ITERA
 
 ## 📋 Deskripsi
 
@@ -213,13 +216,6 @@ Dataset primer (243 citra) dapat didownload dari:
   - Sudut pandang dari atas (bird's eye view)
   - Motor tidak saling bertumpuk
   - Latar belakang kontras dengan motor
-
-## 👨‍💻 Pengembang
-
-**Kelompok AFEnter**
-- Mata Kuliah: Pengolahan Citra Digital
-- Institusi: Institut Teknologi Sumatera (ITERA)
-- Tahun: 2025
 
 ## 📄 Lisensi
 
