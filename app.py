@@ -1,5 +1,5 @@
 """
-Dashboard Streamlit - Deteksi Area Parkir Motor
+Streamlit - Deteksi Area Parkir Motor
 Kelompok: AFEnter
 Institut Teknologi Sumatera (ITERA)
 """
@@ -18,7 +18,7 @@ import io
 # KONFIGURASI HALAMAN
 # =========================================================
 st.set_page_config(
-    page_title="Dashboard Deteksi Parkir - AFEnter",
+    page_title="Deteksi Parkir - AFEnter",
     page_icon="🅿️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -206,7 +206,7 @@ def display_process_steps(results):
 
 def display_evaluation_metrics(results, ground_truth=None):
     """
-    Menampilkan metrik evaluasi pemrosesan citra dengan Confusion Matrix
+    Menampilkan matrix evaluasi pemrosesan citra dengan Confusion Matrix
     
     Args:
         results: Hasil pemrosesan dari image_processing
@@ -226,61 +226,8 @@ def display_evaluation_metrics(results, ground_truth=None):
     else:
         eval_data = results['evaluation']
     
-    st.subheader("📊 Evaluasi Deteksi Slot Parkir")
-    
-    # Occupancy Rate
-    st.markdown("### 🅿️ Hasil Deteksi (Prediksi Sistem)")
-    
-    occupancy_rate = eval_data['occupancy_rate']
-    
-    # Determine status and color
-    if occupancy_rate == 100:
-        status = "🔴 PENUH"
-        status_color = "#dc3545"
-        status_desc = "Semua slot parkir terisi. Tidak ada slot kosong."
-    elif occupancy_rate >= 75:
-        status = "🟡 HAMPIR PENUH"
-        status_color = "#ffc107"
-        status_desc = f"Hanya tersisa {results['empty_slots']} slot kosong."
-    elif occupancy_rate >= 50:
-        status = "🟠 SEDANG"
-        status_color = "#fd7e14"
-        status_desc = f"Masih tersedia {results['empty_slots']} slot kosong."
-    elif occupancy_rate > 0:
-        status = "🟢 TERSEDIA"
-        status_color = "#28a745"
-        status_desc = f"Tersedia {results['empty_slots']} slot kosong dari {results['total_slots']} slot."
-    else:
-        status = "🟢 KOSONG"
-        status_color = "#28a745"
-        status_desc = "Semua slot parkir kosong."
-    
-    # Main occupancy display
-    col1, col2 = st.columns([2, 1])
-    
-    with col1:
-        st.markdown(f"""
-        <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                    border-radius: 15px; margin: 10px 0; border-left: 5px solid {status_color};">
-            <h1 style="color: {status_color}; margin: 0; font-size: 48px;">{occupancy_rate}%</h1>
-            <p style="color: #333; margin: 10px 0 0 0; font-size: 20px; font-weight: bold;">{status}</p>
-            <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">{status_desc}</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown(f"""
-        <div style="padding: 20px; background: #f8f9fa; border-radius: 15px; margin: 10px 0;">
-            <h4 style="color: #333; margin: 0 0 15px 0;">📋 Detail Prediksi</h4>
-            <p style="margin: 5px 0;"><b>Total Slot:</b> {results['total_slots']}</p>
-            <p style="margin: 5px 0; color: #dc3545;"><b>Prediksi Terisi:</b> {results['occupied_slots']}</p>
-            <p style="margin: 5px 0; color: #28a745;"><b>Prediksi Kosong:</b> {results['empty_slots']}</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
     # === VALIDASI MANUAL & CONFUSION MATRIX ===
-    st.markdown("---")
-    st.markdown("### 📝 Validasi Manual (Ground Truth)")
+    st.markdown("### 📝 Validasi")
     st.info("💡 **Petunjuk:** Bandingkan hasil prediksi dengan kondisi sebenarnya pada gambar. Pilih status **aktual** untuk setiap slot.")
     
     # Input ground truth dari user
@@ -311,7 +258,7 @@ def display_evaluation_metrics(results, ground_truth=None):
         
         total = TP + TN + FP + FN
         
-        # Hitung metrik
+        # Hitung matrix
         accuracy = ((TP + TN) / total * 100) if total > 0 else 0
         precision = (TP / (TP + FP) * 100) if (TP + FP) > 0 else 0
         recall = (TP / (TP + FN) * 100) if (TP + FN) > 0 else 0
@@ -432,7 +379,7 @@ def display_evaluation_metrics(results, ground_truth=None):
 # =========================================================
 st.markdown("""
 <div class="main-header">
-    <h1>🅿️ DASHBOARD DETEKSI AREA PARKIR MOTOR</h1>
+    <h1>🅿️ DETEKSI AREA PARKIR MOTOR</h1>
     <h3>✨ Kelompok AFEnter ✨</h3>
     <p style="font-size: 16px; margin-top: 10px;">Institut Teknologi Sumatera (ITERA)</p>
     <p style="font-size: 14px; opacity: 0.9;">Pengolahan Citra Digital - 2025</p>
@@ -591,7 +538,7 @@ elif menu == "📊 Dataset & Tujuan":
     
     st.markdown("### 📋 Aturan Pengumpulan Dataset (Rule-Based)")
     st.markdown("""
-    <div class="info-box" style="color: black;">
+    <div style="color: white;">
         <ol>
             <li>Foto diambil dari <b>sudut pojok</b> area parkir</li>
             <li>Jarak pengambilan <b>±2 meter</b> dari kendaraan</li>
@@ -644,12 +591,12 @@ elif menu == "📊 Dataset & Tujuan":
     
     st.markdown("---")
     
-    # Metrik Evaluasi
-    st.header("📊 Metrik Evaluasi")
+    # Matrix Evaluasi
+    st.header("📊 Matrix Evaluasi")
     st.markdown("""
-    <div class="info-box" style="color: black;">
+    <div  style="color: white;">
         <p>Sistem ini menggunakan <b>Confusion Matrix</b> untuk mengevaluasi akurasi deteksi slot parkir. 
-        Karena kasus ini adalah <b>Binary Classification</b> (Terisi/Kosong), metrik yang digunakan adalah:</p>
+        Karena kasus ini adalah <b>Binary Classification</b> (Terisi/Kosong), matrix yang digunakan adalah:</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -671,9 +618,9 @@ elif menu == "📊 Dataset & Tujuan":
     
     with col2:
         st.markdown("""
-        #### 📈 Metrik Utama
+        #### 📈 Matrix Utama
         
-        | Metrik | Formula | Keterangan |
+        | Matrix | Formula | Keterangan |
         |--------|---------|------------|
         | **Accuracy** | (TP+TN)/(Total) | Ketepatan keseluruhan |
         | **Precision** | TP/(TP+FP) | Ketepatan prediksi "Terisi" |
@@ -688,7 +635,7 @@ elif menu == "📊 Dataset & Tujuan":
     # Hasil Percobaan
     st.header("📊 Hasil Percobaan")
     st.markdown("""
-    <div class="info-box" style="color: black;">
+    <div style="color: white;">
         <p>Berdasarkan pengujian pada <b>243 citra</b> dataset, diperoleh hasil sebagai berikut:</p>
     </div>
     """, unsafe_allow_html=True)
@@ -730,7 +677,7 @@ elif menu == "📊 Dataset & Tujuan":
             <li><b>Prediksi Benar:</b> 197 citra berhasil dideteksi dengan benar</li>
             <li><b>Prediksi Salah:</b> 46 citra mengalami kesalahan deteksi (False Positive/False Negative)</li>
         </ul>
-        <p><i>Kesalahan deteksi dapat disebabkan oleh kondisi pencahayaan, sudut pengambilan foto, atau objek yang mirip dengan motor.</i></p>
+        <p>Kesalahan deteksi dapat disebabkan oleh kondisi pencahayaan, sudut pengambilan foto, atau objek yang mirip dengan motor.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -784,7 +731,12 @@ elif menu == "🔬 Proses Citra":
                 
                 st.markdown("---")
                 
-                # Statistik
+                # Tampilkan semua tahapan pemrosesan terlebih dahulu
+                display_process_steps(results)
+                
+                st.markdown("---")
+                
+                # Statistik Hasil Deteksi
                 st.header("📈 Hasil Deteksi")
                 col1, col2, col3 = st.columns(3)
                 
@@ -821,11 +773,6 @@ elif menu == "🔬 Proses Citra":
                             st.error(f"**Slot {idx+1}:** {status}")
                         else:
                             st.success(f"**Slot {idx+1}:** {status}")
-                
-                st.markdown("---")
-                
-                # Tampilkan semua tahapan
-                display_process_steps(results)
                 
                 st.markdown("---")
                 
@@ -908,7 +855,12 @@ elif menu == "📤 Upload Foto Sendiri":
             
             st.markdown("---")
             
-            # Statistik
+            # Tampilkan semua tahapan pemrosesan terlebih dahulu
+            display_process_steps(results)
+            
+            st.markdown("---")
+            
+            # Statistik Hasil Deteksi
             st.header("📈 Hasil Deteksi")
             col1, col2, col3 = st.columns(3)
             
@@ -948,11 +900,6 @@ elif menu == "📤 Upload Foto Sendiri":
             
             st.markdown("---")
             
-            # Tampilkan semua tahapan
-            display_process_steps(results)
-            
-            st.markdown("---")
-            
             # Tampilkan Evaluasi
             display_evaluation_metrics(results)
 
@@ -963,7 +910,7 @@ elif menu == "📤 Upload Foto Sendiri":
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 20px;">
-    <p><b>Dashboard Deteksi Area Parkir Motor</b></p>
+    <p><b>Deteksi Area Parkir Motor</b></p>
     <p>Kelompok AFEnter - Pengolahan Citra Digital</p>
     <p>Institut Teknologi Sumatera (ITERA) © 2025</p>
 </div>
