@@ -1,7 +1,5 @@
 # 🅿️ Deteksi Area Parkir Motor
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://afenter.streamlit.app/)
-
 Aplikasi berbasis **Streamlit** untuk mendeteksi area parkir motor menggunakan teknik pengolahan citra digital.
 
 > **Kelompok:** AFEnter  
