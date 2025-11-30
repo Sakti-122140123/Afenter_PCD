@@ -21,6 +21,14 @@ Kelompok mahasiswa Institut Teknologi Sumatera (ITERA) untuk tugas mata kuliah P
 
 ---
 
+## 🌐 Akses Aplikasi
+
+Aplikasi sudah di-deploy dan dapat diakses langsung melalui:
+
+**🔗 [https://afenter.streamlit.app/](https://afenter.streamlit.app/)**
+
+---
+
 ## 📋 Deskripsi
 
 Project ini menerapkan metode pengolahan citra digital untuk mendeteksi area parkir kosong dan terisi pada gambar area parkir kampus ITERA. Sistem dapat memproses gambar dari dataset maupun foto yang diupload pengguna.
@@ -35,7 +43,7 @@ Project ini menerapkan metode pengolahan citra digital untuk mendeteksi area par
 ## 🛠️ Teknologi yang Digunakan
 
 - **Python 3.8+**
-- **Streamlit**: Framework web GUI
+- **Streamlit**: Framework web project
 - **OpenCV**: Pemrosesan citra
 - **NumPy**: Komputasi numerik
 - **rembg**: Remove background otomatis
@@ -47,7 +55,7 @@ Project ini menerapkan metode pengolahan citra digital untuk mendeteksi area par
 ### 1. Clone atau Download Repository
 
 ```powershell
-cd d:\Sakti\PCD\Dashboard
+cd d:\Sakti\PCD\AFEnter_PCD
 ```
 
 ### 2. Buat Virtual Environment (Opsional tapi Disarankan)
@@ -67,7 +75,7 @@ pip install -r requirements.txt
 
 ## 🚀 Cara Menjalankan
 
-### 1. Jalankan GUI
+### 1. Jalankan Project
 
 ```powershell
 streamlit run app.py
@@ -85,7 +93,7 @@ Jika ingin menggunakan fitur "Proses Citra" dengan dataset:
 
 Contoh struktur folder:
 ```
-Dashboard/
+AFEnter_PCD/
 ├── app.py
 ├── image_processing.py
 ├── requirements.txt
@@ -157,7 +165,7 @@ Untuk hasil optimal, foto yang diupload harus memenuhi ketentuan:
 ## 📁 Struktur Project
 
 ```
-Dashboard/
+AFEnter_PCD/
 ├── app.py                    # File utama aplikasi Streamlit
 ├── image_processing.py       # Modul pemrosesan citra
 ├── requirements.txt          # Dependencies Python
