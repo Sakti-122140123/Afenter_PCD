@@ -225,154 +225,6 @@ def display_evaluation_metrics(results, ground_truth=None):
         }
     else:
         eval_data = results['evaluation']
-    
-    # === VALIDASI MANUAL & CONFUSION MATRIX ===
-    st.markdown("### 📝 Validasi")
-    st.info("💡 **Petunjuk:** Bandingkan hasil prediksi dengan kondisi sebenarnya pada gambar. Pilih status **aktual** untuk setiap slot.")
-    
-    # Input ground truth dari user
-    gt_cols = st.columns(4)
-    actual_status = []
-    
-    for idx in range(4):
-        with gt_cols[idx]:
-            # Default value based on prediction
-            default_idx = 0 if results['slot_results'][idx] == "Occupied" else 1
-            actual = st.selectbox(
-                f"Slot {idx+1} (Aktual)",
-                ["Terisi (Ada Motor)", "Kosong (Tidak Ada Motor)"],
-                index=default_idx,
-                key=f"gt_slot_{idx}"
-            )
-            actual_status.append("Occupied" if "Terisi" in actual else "Empty")
-    
-    # Hitung Confusion Matrix
-    if st.button("🔍 Hitung Evaluasi", type="primary"):
-        predictions = results['slot_results']
-        
-        # Hitung TP, TN, FP, FN
-        TP = sum(1 for p, a in zip(predictions, actual_status) if p == "Occupied" and a == "Occupied")
-        TN = sum(1 for p, a in zip(predictions, actual_status) if p == "Empty" and a == "Empty")
-        FP = sum(1 for p, a in zip(predictions, actual_status) if p == "Occupied" and a == "Empty")
-        FN = sum(1 for p, a in zip(predictions, actual_status) if p == "Empty" and a == "Occupied")
-        
-        total = TP + TN + FP + FN
-        
-        # Hitung matrix
-        accuracy = ((TP + TN) / total * 100) if total > 0 else 0
-        precision = (TP / (TP + FP) * 100) if (TP + FP) > 0 else 0
-        recall = (TP / (TP + FN) * 100) if (TP + FN) > 0 else 0
-        f1_score = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0
-        
-        st.markdown("### 📈 Hasil Evaluasi (Confusion Matrix)")
-        
-        # Confusion Matrix Visual
-        col1, col2 = st.columns([1, 1])
-        
-        with col1:
-            st.markdown("#### Confusion Matrix")
-            st.markdown(f"""
-            <div style="padding: 15px; background: #f8f9fa; border-radius: 10px;">
-                <table style="width: 100%; text-align: center; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 10px;"></td>
-                        <td style="padding: 10px;"></td>
-                        <td colspan="2" style="padding: 10px; font-weight: bold; background: #e9ecef;">Aktual</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px;"></td>
-                        <td style="padding: 10px;"></td>
-                        <td style="padding: 10px; background: #ffcdd2; font-weight: bold;">Terisi</td>
-                        <td style="padding: 10px; background: #c8e6c9; font-weight: bold;">Kosong</td>
-                    </tr>
-                    <tr>
-                        <td rowspan="2" style="padding: 10px; font-weight: bold; background: #e9ecef; writing-mode: vertical-rl;">Prediksi</td>
-                        <td style="padding: 10px; background: #ffcdd2; font-weight: bold;">Terisi</td>
-                        <td style="padding: 15px; background: #81c784; font-weight: bold; font-size: 20px;">{TP}</td>
-                        <td style="padding: 15px; background: #e57373; font-weight: bold; font-size: 20px;">{FP}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; background: #c8e6c9; font-weight: bold;">Kosong</td>
-                        <td style="padding: 15px; background: #e57373; font-weight: bold; font-size: 20px;">{FN}</td>
-                        <td style="padding: 15px; background: #81c784; font-weight: bold; font-size: 20px;">{TN}</td>
-                    </tr>
-                </table>
-                <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                    <b>TP</b> (True Positive): {TP} | <b>TN</b> (True Negative): {TN}<br>
-                    <b>FP</b> (False Positive): {FP} | <b>FN</b> (False Negative): {FN}
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("#### Metrik Evaluasi")
-            
-            # Accuracy
-            acc_color = "#28a745" if accuracy >= 75 else ("#ffc107" if accuracy >= 50 else "#dc3545")
-            st.markdown(f"""
-            <div style="padding: 15px; margin: 5px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                        border-radius: 10px; border-left: 4px solid {acc_color};">
-                <p style="margin: 0; font-size: 14px; color: #666;">Accuracy</p>
-                <p style="margin: 0; font-size: 28px; font-weight: bold; color: {acc_color};">{accuracy:.1f}%</p>
-                <p style="margin: 0; font-size: 11px; color: #999;">Ketepatan keseluruhan prediksi</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Precision
-            prec_color = "#28a745" if precision >= 75 else ("#ffc107" if precision >= 50 else "#dc3545")
-            st.markdown(f"""
-            <div style="padding: 15px; margin: 5px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                        border-radius: 10px; border-left: 4px solid {prec_color};">
-                <p style="margin: 0; font-size: 14px; color: #666;">Precision</p>
-                <p style="margin: 0; font-size: 28px; font-weight: bold; color: {prec_color};">{precision:.1f}%</p>
-                <p style="margin: 0; font-size: 11px; color: #999;">Ketepatan prediksi "Terisi"</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Recall
-            rec_color = "#28a745" if recall >= 75 else ("#ffc107" if recall >= 50 else "#dc3545")
-            st.markdown(f"""
-            <div style="padding: 15px; margin: 5px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                        border-radius: 10px; border-left: 4px solid {rec_color};">
-                <p style="margin: 0; font-size: 14px; color: #666;">Recall</p>
-                <p style="margin: 0; font-size: 28px; font-weight: bold; color: {rec_color};">{recall:.1f}%</p>
-                <p style="margin: 0; font-size: 11px; color: #999;">Sensitivitas deteksi motor</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # F1-Score
-            f1_color = "#28a745" if f1_score >= 75 else ("#ffc107" if f1_score >= 50 else "#dc3545")
-            st.markdown(f"""
-            <div style="padding: 15px; margin: 5px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); 
-                        border-radius: 10px; border-left: 4px solid {f1_color};">
-                <p style="margin: 0; font-size: 14px; color: #666;">F1-Score</p>
-                <p style="margin: 0; font-size: 28px; font-weight: bold; color: {f1_color};">{f1_score:.1f}%</p>
-                <p style="margin: 0; font-size: 11px; color: #999;">Harmonic mean Precision & Recall</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Interpretasi hasil
-        st.markdown("#### 📋 Interpretasi Hasil")
-        
-        if FP > 0:
-            st.warning(f"⚠️ **False Positive ({FP})**: Sistem mendeteksi {FP} slot sebagai TERISI padahal sebenarnya KOSONG.")
-        if FN > 0:
-            st.warning(f"⚠️ **False Negative ({FN})**: Sistem mendeteksi {FN} slot sebagai KOSONG padahal sebenarnya ada MOTOR.")
-        
-        if accuracy == 100:
-            st.success("🎉 **Sempurna!** Semua prediksi sesuai dengan kondisi aktual.")
-        elif accuracy >= 75:
-            st.success(f"✅ **Baik!** Akurasi {accuracy:.1f}% menunjukkan sistem bekerja dengan cukup baik.")
-        elif accuracy >= 50:
-            st.info(f"📊 **Cukup.** Akurasi {accuracy:.1f}% masih perlu peningkatan.")
-        else:
-            st.error(f"❌ **Perlu Perbaikan.** Akurasi {accuracy:.1f}% menunjukkan sistem belum optimal.")
-    
-    # Processing time
-    st.markdown("---")
-    timing = eval_data['timing']
-    st.caption(f"⏱️ Waktu pemrosesan: {timing['total']} ms")
-
 
 # =========================================================
 # HEADER UTAMA
@@ -393,12 +245,12 @@ st.markdown("""
 st.sidebar.title("📋 Menu Navigasi")
 menu = st.sidebar.radio(
     "Pilih Halaman:",
-    ["🏠 Beranda", "📊 Dataset & Tujuan", "🔬 Proses Citra", "📤 Upload Foto Sendiri"]
+    ["🏠 Beranda", "📊 Dataset & Alur", "🔬 Proses Citra", "📤 Upload Foto Sendiri"]
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Mata Kuliah:** Pengolahan Citra Digital")
-st.sidebar.markdown("**Program Studi:** Teknik Informatika ITERA")
+st.sidebar.markdown("Pengolahan Citra Digital 2025")
+st.sidebar.markdown("Teknik Informatika ITERA")
 
 
 # =========================================================
@@ -515,9 +367,9 @@ if menu == "🏠 Beranda":
 
 
 # =========================================================
-# HALAMAN 2: DATASET & TUJUAN
+# HALAMAN 2: DATASET & ALUR
 # =========================================================
-elif menu == "📊 Dataset & Tujuan":
+elif menu == "📊 Dataset & Alur":
     st.header("📦 Sumber Dataset")
     
     st.markdown("""
@@ -538,7 +390,7 @@ elif menu == "📊 Dataset & Tujuan":
     
     st.markdown("### 📋 Aturan Pengumpulan Dataset (Rule-Based)")
     st.markdown("""
-    <div style="color: white;">
+    <div>
         <ol>
             <li>Foto diambil dari <b>sudut pojok</b> area parkir</li>
             <li>Jarak pengambilan <b>±2 meter</b> dari kendaraan</li>
@@ -588,47 +440,6 @@ elif menu == "📊 Dataset & Tujuan":
             st.markdown(f"**{step}**")
             st.write(desc)
             st.markdown("---")
-    
-    st.markdown("---")
-    
-    # Matrix Evaluasi
-    st.header("📊 Matrix Evaluasi")
-    st.markdown("""
-    <div  style="color: white;">
-        <p>Sistem ini menggunakan <b>Confusion Matrix</b> untuk mengevaluasi akurasi deteksi slot parkir. 
-        Karena kasus ini adalah <b>Binary Classification</b> (Terisi/Kosong), matrix yang digunakan adalah:</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        #### 📐 Confusion Matrix
-        | | Aktual: Terisi | Aktual: Kosong |
-        |---|:---:|:---:|
-        | **Prediksi: Terisi** | TP ✅ | FP ❌ |
-        | **Prediksi: Kosong** | FN ❌ | TN ✅ |
-        
-        - **TP (True Positive)**: Prediksi TERISI, aktual ada motor
-        - **TN (True Negative)**: Prediksi KOSONG, aktual kosong
-        - **FP (False Positive)**: Prediksi TERISI, aktual kosong
-        - **FN (False Negative)**: Prediksi KOSONG, aktual ada motor
-        """)
-    
-    with col2:
-        st.markdown("""
-        #### 📈 Matrix Utama
-        
-        | Matrix | Formula | Keterangan |
-        |--------|---------|------------|
-        | **Accuracy** | (TP+TN)/(Total) | Ketepatan keseluruhan |
-        | **Precision** | TP/(TP+FP) | Ketepatan prediksi "Terisi" |
-        | **Recall** | TP/(TP+FN) | Sensitivitas deteksi motor |
-        | **F1-Score** | 2×(P×R)/(P+R) | Harmonic mean |
-        """)
-    
-    st.info("💡 **Catatan:** Evaluasi dilakukan dengan membandingkan hasil prediksi sistem dengan kondisi aktual yang diinput secara manual oleh pengguna.")
     
     st.markdown("---")
     
@@ -773,12 +584,6 @@ elif menu == "🔬 Proses Citra":
                             st.error(f"**Slot {idx+1}:** {status}")
                         else:
                             st.success(f"**Slot {idx+1}:** {status}")
-                
-                st.markdown("---")
-                
-                # Tampilkan Evaluasi
-                display_evaluation_metrics(results)
-
 
 # =========================================================
 # HALAMAN 4: UPLOAD FOTO SENDIRI
