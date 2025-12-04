@@ -150,7 +150,7 @@ def load_dataset_images(dataset_path="dataset"):
     images = []
     for root, dirs, files in os.walk(dataset_path):
         for file in files:
-            if file.lower().endswith('.jpg'):
+            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
                 images.append(os.path.join(root, file))
     
     # Sort berdasarkan nomor dalam nama file (Citra 1.jpg, Citra 2.jpg, ...)
@@ -245,7 +245,7 @@ st.markdown("""
 st.sidebar.title("📋 Menu Navigasi")
 menu = st.sidebar.radio(
     "Pilih Halaman:",
-    ["🏠 Beranda", "📊 Dataset & Alur", "🔬 Proses Citra", "📤 Upload Foto Sendiri"]
+    ["🏠 Beranda", "📦 Dataset", "⚙️ Alur dan Hasil", "🔬 Proses Citra", "📤 Upload Foto Sendiri"]
 )
 
 st.sidebar.markdown("---")
@@ -367,9 +367,9 @@ if menu == "🏠 Beranda":
 
 
 # =========================================================
-# HALAMAN 2: DATASET & ALUR
+# HALAMAN 2: DATASET
 # =========================================================
-elif menu == "📊 Dataset & Alur":
+elif menu == "📦 Dataset":
     st.header("📦 Sumber Dataset")
     
     st.markdown("""
@@ -406,47 +406,55 @@ elif menu == "📊 Dataset & Alur":
     st.markdown("""
     [📥 Download Dataset dari Google Drive](https://drive.google.com/drive/folders/1_Yisu9bMHBWHbZx7UoBywWo2qlKj73br)
     """)
-    
-    st.markdown("---")
-    
+
+
+# =========================================================
+# HALAMAN 3: ALUR dan HASIL
+# =========================================================
+elif menu == "⚙️ Alur dan Hasil":
     st.header("⚙️ Alur Proses Pengolahan Citra")
     
+    st.markdown("""
+    <div>
+        <p>Berikut adalah tahapan pemrosesan citra yang digunakan dalam sistem deteksi area parkir motor:</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # List tahapan dengan detail
+    steps_detail = [
+    ("Ambil Gambar dari Dataset", "Program menelusuri seluruh direktori (os.walk) untuk mengumpulkan semua file gambar (JPG, PNG, JPEG) ke dalam daftar input."),
+    ("Remove Background", "Menggunakan pustaka rembg (model AI) untuk memisahkan objek motor dari latar belakang sehingga gangguan visual dapat diminimalkan."),
+    ("Resize Image", "Normalisasi ukuran citra (seragam) menjadi 960 × 540 piksel pada citra asli dan citra hasil remove background untuk kestabilan pemrosesan."),
+    ("Grayscale → Gaussian Blur", "Konversi citra hasil remove background ke grayscale lalu terapkan Gaussian Blur (kernel (5,5)) untuk mereduksi noise sebelum segmentasi."),
+    ("Thresholding Otsu", "Binerisasi otomatis menggunakan Otsu sehingga objek (motor) menjadi putih dan latar belakang menjadi hitam."),
+    ("Morfologi (Closing → Opening)", "Terapkan closing untuk menutup lubang kecil dalam objek, kemudian opening untuk menghapus noise kecil sehingga objek motor menjadi lebih solid."),
+    ("Distance Transform (Sure Foreground)", "Hitung distance transform pada hasil morfologi, ambil 30% dari jarak maksimum sebagai sure-foreground untuk mengekstrak area inti objek."),
+    ("Tentukan ROI (pangkas 35% bagian atas)", "Potong 35% bagian atas gambar pada hasil segmentasi untuk mengeliminasi langit/tembok dan fokus pada area lantai parkir."),
+    ("Deteksi Kontur Motor", "Cari kontur pada ROI; filter kontur berdasarkan luas piksel antara 300 sampai 250.000 untuk membedakan motor dari noise atau area besar."),
+    ("Bagi Menjadi 4 Slot", "Bagi lebar gambar menjadi 4 bagian vertikal sama besar — setiap bagian merepresentasikan 1 slot parkir."),
+    ("Cek Occupancy (Overlap → Occupied atau Empty)", "Periksa apakah bounding box motor overlap dengan koordinat slot; jika overlap → Occupied (kotak merah), jika tidak → Empty (kotak hijau)."),
+    ("Visualisasi", "Gambar kotak warna pada tiap slot dengan teks status lalu tampilkan hasil akhir.")
+    ]
+    
+    # Tampilkan daftar tahapan (judul saja)
+    st.markdown("### 📋 Tahapan Proses:")
+    for idx, (step, _) in enumerate(steps_detail, 1):
+        st.markdown(f"**{idx}. {step}**")
+    
+    # Expander untuk melihat detail semua tahapan
     with st.expander("📖 Lihat Detail Setiap Tahap"):
-        steps_detail = {
-            "1. Ambil Gambar dari Dataset": "Program melakukan scanning seluruh folder menggunakan os.walk(). Setiap file gambar (JPG, PNG, JPEG) dimasukkan ke dalam list untuk diproses.",
-            
-            "2. Remove Background": "Menggunakan library rembg dengan model AI untuk memisahkan objek motor dari latar belakang, sehingga fokus pada kendaraan.",
-            
-            "3. Resize Image": "Gambar di-resize menjadi 960 × 540 pixel untuk memastikan komputasi stabil dan konsisten.",
-            
-            "4. Grayscale → Gaussian Blur": "Konversi ke grayscale untuk menyederhanakan data, kemudian Gaussian Blur untuk mengurangi noise.",
-            
-            "5. Thresholding Otsu": "Mengubah citra menjadi hitam-putih otomatis berdasarkan histogram. Motor menjadi putih, background hitam.",
-            
-            "6. Morfologi (Closing → Opening)": "Closing menutup lubang kecil pada objek. Opening menghapus noise kecil. Hasilnya objek motor lebih solid.",
-            
-            "7. Distance Transform": "Menghitung jarak setiap piksel putih ke tepi terdekat, menghasilkan area 'sure foreground' yang pasti merupakan motor.",
-            
-            "8. Tentukan ROI": "Mengambil 35% dari atas gambar untuk fokus pada area parkir, menghilangkan langit/tembok.",
-            
-            "9. Deteksi Kontur Motor": "Menganalisis kontur dengan luas piksel 300-250.000. Terlalu kecil = noise, terlalu besar = bukan motor.",
-            
-            "10. Bagi Menjadi 4 Slot": "Lebar gambar dibagi 4 bagian sama besar, setiap bagian = 1 slot parkir.",
-            
-            "11. Cek Occupancy": "Setiap slot dicek apakah ada motor. Jika ada overlap → Occupied (merah), jika tidak → Empty (hijau)."
-        }
-        
-        for step, desc in steps_detail.items():
-            st.markdown(f"**{step}**")
+        for idx, (step, desc) in enumerate(steps_detail, 1):
+            st.markdown(f"**{idx}. {step}**")
             st.write(desc)
-            st.markdown("---")
+            if idx < len(steps_detail):
+                st.markdown("---")
     
-    st.markdown("---")
+    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
     
-    # Hasil Percobaan
+    # Bagian Hasil Percobaan
     st.header("📊 Hasil Percobaan")
     st.markdown("""
-    <div style="color: white;">
+    <div>
         <p>Berdasarkan pengujian pada <b>243 citra</b> dataset, diperoleh hasil sebagai berikut:</p>
     </div>
     """, unsafe_allow_html=True)
@@ -494,7 +502,7 @@ elif menu == "📊 Dataset & Alur":
 
 
 # =========================================================
-# HALAMAN 3: PROSES CITRA
+# HALAMAN 4: PROSES CITRA
 # =========================================================
 elif menu == "🔬 Proses Citra":
     st.header("🔬 Pemrosesan Gambar dari Dataset")
@@ -586,7 +594,7 @@ elif menu == "🔬 Proses Citra":
                             st.success(f"**Slot {idx+1}:** {status}")
 
 # =========================================================
-# HALAMAN 4: UPLOAD FOTO SENDIRI
+# HALAMAN 5: UPLOAD FOTO SENDIRI
 # =========================================================
 elif menu == "📤 Upload Foto Sendiri":
     st.header("📤 Upload dan Proses Foto Anda")
