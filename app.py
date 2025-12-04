@@ -199,9 +199,9 @@ def display_process_steps(results):
                 with cols[j]:
                     st.markdown(f"**{i+j+1}. {title}**")
                     if is_gray:
-                        st.image(img, use_container_width=True, clamp=True)
+                        st.image(img, width='stretch', clamp=True)
                     else:
-                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), use_container_width=True)
+                        st.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), width='stretch')
 
 
 def display_evaluation_metrics(results, ground_truth=None):
@@ -617,7 +617,7 @@ elif menu == "📤 Upload Foto Sendiri":
         # Tampilkan preview
         st.subheader("👁️ Preview Gambar")
         image = Image.open(uploaded_file)
-        st.image(image, caption="Gambar yang diupload", use_container_width=True)
+        st.image(image, caption="Gambar yang diupload", width='stretch')
         
         # Validasi gambar
         image_array = np.array(image)
